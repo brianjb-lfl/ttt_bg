@@ -2,7 +2,7 @@
 
 const appState = {
   lastMarkedCell: null,
-  currBoard: [null,null,null,null,null,null,null,null,null],
+  currBoard: ['&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;'],
   currCell: null,
   currMarker: 'X',
   winCombo: null,   //element in winning combo array
@@ -13,16 +13,23 @@ const appState = {
   ]
 };
 
-let currCellID;
 
+let count = 0;
 function cellHandler(){
   $('.board').on('click', '.cell', event => {
     //console.log('logging ' + $(event.currentTarget).attr('id'));
     if($(event.currentTarget).find('p').text().trim() === ''){
       console.log('running update board');
-      currCellID = parseInt($(event.currentTarget).attr('id'));
-      appState.currBoard[currCellID] = appState.currMarker;
+// currCellID = parseInt($(event.currentTarget).attr('id'));
+      appState.currBoard[parseInt($(event.currentTarget).attr('id'))] = appState.currMarker;
+      count += 1;
+      if (count % 2 === 1){
+        appState.currMarker = 'O';
+      } else {
+        appState.currMarker = 'X';
+      }
     }
+    renderTicTacToe();
     console.log(appState.currBoard);
   });
 }
@@ -36,9 +43,31 @@ function btnHandler(){
 
 }
 
+function renderTicTacToe(){
+  let str = '<div class="row">';
+  for(let i = 0; i < 9; i++){
+    
+    str += 
+      `<div class="cell" id="${i}">
+        <p>${appState.currBoard[i]}</p>
+      </div>`;
+    if((i+1) % 3 === 0){
+      str+=`</div>
+            <div class="row">`;
+    }
+    
+  }
+  str += '</div>';
+  $('.board').html(str);
+}
+
 function handleTTTApp(){
+  renderTicTacToe();
   cellHandler();
   btnHandler();
 }
 
 $(handleTTTApp);
+
+
+
